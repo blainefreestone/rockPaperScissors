@@ -37,3 +37,15 @@ function determineWinner(playerSelection, computerSelection)
             }
     }
 }
+
+function game()
+{
+    for (let runningRoundCount = 0; runningRoundCount < 5; runningRoundCount++)
+    {
+        let playerSelection = prompt("Rock, paper, or scissors?\n> ")
+        let roundResult = determineWinner(playerSelection, getComputerChoice())
+        console.log(roundResult)
+    }
+}
+
+game();
