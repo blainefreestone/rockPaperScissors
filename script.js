@@ -38,14 +38,11 @@ function determineWinner(playerSelection, computerSelection)
     }
 }
 
-function game()
+function playRound(playerSelection)
 {
-    for (let runningRoundCount = 0; runningRoundCount < 5; runningRoundCount++)
-    {
-        let playerSelection = prompt("Rock, paper, or scissors?\n> ")
-        let roundResult = determineWinner(playerSelection, getComputerChoice())
-        console.log(roundResult)
-    }
+    let roundResult = determineWinner(playerSelection, getComputerChoice())
+    console.log(roundResult)
 }
 
-game();
+const buttons = document.querySelectorAll('button');
+buttons.forEach(button => button.addEventListener('click', e => playRound(e.target.id)));
