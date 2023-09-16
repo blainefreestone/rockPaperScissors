@@ -1,48 +1,117 @@
-function getComputerChoice()
+const ROCK = 1;
+const PAPER = 2;
+const SCISSORS = 3;
+
+function getMoveText(index)
+{
+    let moveText;
+    switch (index) {
+        case ROCK:
+            moveText = "Rock";
+            break;
+        case PAPER:
+            moveText = "Paper";
+            break;
+        case SCISSORS:
+            moveText = "Scissors";
+            break;
+    }
+    return moveText;
+}
+
+function getcomputerSelection()
 {
     let randomNumber = Math.floor(Math.random() * 3); // Generate random integer from 0-2
-    let computerChoice;
+    let computerSelection;
     // Computer choice based on random integer.
     switch (randomNumber) {
         case 0:
-            computerChoice = "rock";
+            computerSelection = ROCK;
             break;
         case 1:
-            computerChoice = "paper";
+            computerSelection = PAPER;
             break;
         case 2:
-            computerChoice = "scissors";
+            computerSelection = SCISSORS;
             break;
     }
-    return computerChoice;
+    return computerSelection;
 }
 
 function determineWinner(playerSelection, computerSelection)
 {
-    let lowerPlayerSelection = playerSelection.toLowerCase()
-    if (lowerPlayerSelection === computerSelection) {return "You tied!"} // If selections are the same, tie.
+    if (playerSelection === computerSelection) {return null} // If selections are the same, tie.
     else
     {
         // Three possible player selections with their win condition first and lose condition second.
-        switch (lowerPlayerSelection) {
-            case "rock":
-                if (computerSelection === "scissors") {return "You win! Rock beats scissors."}
-                if (computerSelection === "paper") {return "You lose! Paper beats rock."}
-            case "paper":
-                if (computerSelection === "rock") {return "You win! Paper beats rock."}
-                else if (computerSelection === "scissors") {return "You lose! Scissors beats paper."}
-            case "scissors":
-                if (computerSelection === "paper") {return "You win! Scissors beats paper."}
-                else if (computerSelection === "rock") {return "You lose! Rock beats paper."}
+        switch (playerSelection) {
+            case ROCK:
+                if (computerSelection === SCISSORS) {return true}
+                if (computerSelection === PAPER) {return false}
+            case PAPER:
+                if (computerSelection === ROCK) {return true}
+                else if (computerSelection === SCISSORS) {return false}
+            case SCISSORS:
+                if (computerSelection === PAPER) {return true}
+                else if (computerSelection === ROCK) {return false}
             }
     }
 }
 
 function playRound(playerSelection)
 {
-    let roundResult = determineWinner(playerSelection, getComputerChoice())
-    console.log(roundResult)
+    let computerSelection = getcomputerSelection();
+
+    let roundResult = determineWinner(playerSelection, computerSelection);
+    let roundResultText;
+
+    let computerSelectionText = getMoveText(computerSelection);
+    let playerSelectionText = getMoveText(playerSelection);
+
+    console.log(roundResult);
+
+    if (roundResult === true) {
+        roundResultText = "You win! " + playerSelectionText + ' beats ' + computerSelectionText + '.';
+        runningPlayerScore += 1;
+    }
+    else if (roundResult === false) {
+        roundResultText = "You lose! " + computerSelectionText + ' beats ' + playerSelectionText + '.';
+        runningComputerScore += 1;
+    }
+    else {
+        roundResultText = "You tied!";
+    }
+
+    result.textContent = roundResultText;
+    score.textContent = "You: " + runningPlayerScore + " Computer: " + runningComputerScore + "." ;
+
+    if (runningPlayerScore >= 5) {
+        finalResult.textContent = "Congratulations! You win the match.";
+        runningComputerScore = 0, runningPlayerScore = 0;
+    }
+    else if (runningComputerScore >= 5) {
+        finalResult.textContent = "Dang. You lost the match. Better luck next time.";
+        runningComputerScore = 0, runningPlayerScore = 0;
+    }
 }
 
+runningPlayerScore = 0;
+runningComputerScore = 0;
+
+const results = document.querySelector('#result');
+
 const buttons = document.querySelectorAll('button');
-buttons.forEach(button => button.addEventListener('click', e => playRound(e.target.id)));
+const result = document.querySelector('#results #result');
+const score = document.querySelector('#results #score');
+const finalResult = document.querySelector('#results #final-result');
+
+// Create event listeners for the rock, paper and scissors buttons. Based on the button id the playerSelection is set
+// and passed into the playRound() function.
+buttons.forEach(button => button.addEventListener('click', e => {
+    let playerSelection;
+    if (e.target.id === "rock") playerSelection = ROCK;
+    else if (e.target.id === "paper") playerSelection = PAPER;
+    else if (e.target.id === "scissors") playerSelection = SCISSORS;
+    finalResult.textContent = ""; // Make sure the final results are cleared before new match started.
+    playRound(playerSelection);
+}));
